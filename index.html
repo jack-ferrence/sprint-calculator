@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sprint Rep Time Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: white;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: red;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      width: 100%;
+    }
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sprint Rep Time Calculator</h1>
+  </header>
+  <div class="container">
+    <label for="repDistance">Enter rep distance (m):</label>
+    <input type="number" id="repDistance" />
+
+    <label for="intensity">Enter intensity (%):</label>
+    <input type="number" id="intensity" placeholder="e.g. 85 for 85%" />
+
+    <label>Enter known sprint times (leave blank if unknown):</label>
+    <input type="number" id="t60" placeholder="60m time (s)" />
+    <input type="number" id="t100" placeholder="100m time (s)" />
+    <input type="number" id="t200" placeholder="200m time (s)" />
+    <input type="number" id="t300" placeholder="300m time (s)" />
+    <input type="number" id="t400" placeholder="400m time (s)" />
+    <input type="number" id="t800" placeholder="800m time (s)" />
+
+    <button onclick="calculateRepTime()">Calculate Rep Time</button>
+
+    <h2 id="result"></h2>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
