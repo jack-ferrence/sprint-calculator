@@ -20,15 +20,49 @@ function calculateRepTime() {
     return;
   }
 
-  // Pick the known point closest to the target distance
-  inputs.sort((a, b) => Math.abs(a.distance - repDistance) - Math.abs(b.distance - repDistance));
-  const { distance: d, time: t } = inputs[0];
+  // Check for exact match
+  const exactMatch = inputs.find(input => input.distance === repDistance);
+  if (exactMatch) {
+    const estTime = exactMatch.time / intensity;
+    document.getElementById("result").innerText = `Estimated time: ${estTime.toFixed(2)} seconds`;
+    return;
+  }
 
-  const v = d / t; // average speed
-  const c = v * Math.pow(d, 0.5); // constant used for extrapolation
+  // Sort inputs by distance
+  inputs.sort((a, b) => a.distance - b.distance);
 
-  const estTime = (repDistance / (c / Math.pow(repDistance, 0.5))) / intensity;
-  const roundedTime = estTime.toFixed(2);
+  // Find two known distances surrounding the target distance
+  let lower = null;
+  let upper = null;
+  for (let i = 0; i < inputs.length - 1; i++) {
+    if (inputs[i].distance < repDistance && inputs[i + 1].distance > repDistance) {
+      lower = inputs[i];
+      upper = inputs[i + 1];
+      break;
+    }
+  }
 
-  document.getElementById("result").innerText = `Estimated time: ${roundedTime} seconds`;
+  if (!lower || !upper) {
+    // If interpolation isn't possible, fallback to closest known distance
+    const closest = inputs.reduce((prev, curr) =>
+      Math.abs(curr.distance - repDistance) < Math.abs(prev.distance - repDistance) ? curr : prev
+    );
+    const v = closest.distance / closest.time;
+    const c = v * Math.sqrt(closest.distance);
+    const estTime = (repDistance / (c / Math.sqrt(repDistance))) / intensity;
+    document.getElementById("result").innerText = `Estimated time: ${estTime.toFixed(2)} seconds`;
+    return;
+  }
+
+  // Interpolate c values
+  const v1 = lower.distance / lower.time;
+  const c1 = v1 * Math.sqrt(lower.distance);
+  const v2 = upper.distance / upper.time;
+  const c2 = v2 * Math.sqrt(upper.distance);
+
+  const weight = (repDistance - lower.distance) / (upper.distance - lower.distance);
+  const c = c1 + (c2 - c1) * weight;
+
+  const estTime = (repDistance / (c / Math.sqrt(repDistance))) / intensity;
+  document.getElementById("result").innerText = `Estimated time: ${estTime.toFixed(2)} seconds`;
 }
