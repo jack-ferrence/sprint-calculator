@@ -18,7 +18,7 @@
       text-align: center;
     }
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: 40px auto;
       padding: 20px;
     }
@@ -36,6 +36,12 @@
       border: 1px solid #ccc;
       background-color: #f9f9f9;
     }
+    img.graph {
+      width: 100%;
+      max-width: 600px;
+      display: block;
+      margin: 20px auto;
+    }
   </style>
 </head>
 <body>
@@ -46,8 +52,8 @@
 
     <div class="section">
       <h2>How to Use</h2>
-      <p>Enter the rep distance (in meters) that you want to calculate a practice time for, and the target intensity as a percentage (e.g., 85 for 85%).</p>
-      <p>Then enter the athlete's known sprint times in seconds for as many of the distances listed as possible. Leave any unknowns blank.</p>
+      <p>Enter the rep distance (in meters) and the target intensity (e.g., 85 for 85%).</p>
+      <p>Then enter the athlete’s sprint times for as many of the listed distances as possible. Leave unknowns blank.</p>
       <p>Click "Calculate Rep Time" to estimate how long the rep should take at the given intensity.</p>
     </div>
 
@@ -70,17 +76,32 @@
     <h2 id="result"></h2>
 
     <div class="section">
-      <h2>How This Works</h2>
-      <p>This tool uses a power-law regression model to fit a curve through the athlete's known sprint times. The formula is:</p>
+      <h2>How This Works (Detailed)</h2>
+      <p>This calculator uses a <strong>power-law regression model</strong> to estimate sprint rep times. The model fits a curve to your inputted race times using the formula:</p>
       <pre>T(D) = A × D^c</pre>
-      <p>Where:
-        <ul>
-          <li><b>T(D)</b> is the predicted time for the rep distance</li>
-          <li><b>D</b> is the rep distance</li>
-          <li><b>A</b> and <b>c</b> are calculated using log-log regression from the input times</li>
-        </ul>
-        Once the full-effort time is estimated, it is adjusted by dividing it by the given intensity percentage (as a decimal). For example, at 85% intensity, the rep time is longer than the all-out time.
-      </p>
+      <ul>
+        <li><strong>T(D)</strong> = predicted time for distance D</li>
+        <li><strong>D</strong> = target rep distance</li>
+        <li><strong>A</strong> = speed coefficient (derived from input)</li>
+        <li><strong>c</strong> = fatigue/decay exponent (shows how much slower the athlete gets over distance)</li>
+      </ul>
+      <p>It performs <strong>log–log linear regression</strong> on the known distances and times to calculate <code>A</code> and <code>c</code>, which create a personalized time prediction curve.</p>
+
+      <h3>Intensity Adjustment</h3>
+      <p>Once the full-effort rep time is calculated, it is divided by the intensity percentage (as a decimal). For example:</p>
+      <pre>Adjusted Time = Full Time / (Intensity ÷ 100)</pre>
+
+      <h3>Performance Metrics (Coming Soon)</h3>
+      <ul>
+        <li>Full-Effort Time</li>
+        <li>Adjusted Time</li>
+        <li>Average m/s Velocity</li>
+        <li>Time per 100m</li>
+      </ul>
+
+      <h3>Model Graph</h3>
+      <p>The following graph shows how the predicted time increases with distance using a sample curve:</p>
+      <img class="graph" src="sprint_prediction_graph.png" alt="Prediction graph showing T = A * D^c" />
     </div>
 
   </div>
