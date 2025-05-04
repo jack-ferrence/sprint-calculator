@@ -15,8 +15,8 @@ function calculateRepTime() {
     return isNaN(value) ? null : { distance: d, time: value };
   }).filter(Boolean);
 
-  if (inputs.length < 1) {
-    document.getElementById("result").innerText = "Please enter at least one known time.";
+  if (inputs.length < 2) {
+    document.getElementById("result").innerText = "Please enter at least two known times to run regression.";
     return;
   }
 
@@ -28,41 +28,22 @@ function calculateRepTime() {
     return;
   }
 
-  // Sort inputs by distance
-  inputs.sort((a, b) => a.distance - b.distance);
+  // Perform log-log linear regression
+  const logDistances = inputs.map(pt => Math.log(pt.distance));
+  const logTimes = inputs.map(pt => Math.log(pt.time));
 
-  // Find two known distances surrounding the target distance
-  let lower = null;
-  let upper = null;
-  for (let i = 0; i < inputs.length - 1; i++) {
-    if (inputs[i].distance < repDistance && inputs[i + 1].distance > repDistance) {
-      lower = inputs[i];
-      upper = inputs[i + 1];
-      break;
-    }
-  }
+  const n = inputs.length;
+  const sumX = logDistances.reduce((a, b) => a + b, 0);
+  const sumY = logTimes.reduce((a, b) => a + b, 0);
+  const sumXY = logDistances.reduce((sum, x, i) => sum + x * logTimes[i], 0);
+  const sumXX = logDistances.reduce((sum, x) => sum + x * x, 0);
 
-  if (!lower || !upper) {
-    // If interpolation isn't possible, fallback to closest known distance
-    const closest = inputs.reduce((prev, curr) =>
-      Math.abs(curr.distance - repDistance) < Math.abs(prev.distance - repDistance) ? curr : prev
-    );
-    const v = closest.distance / closest.time;
-    const c = v * Math.sqrt(closest.distance);
-    const estTime = (repDistance / (c / Math.sqrt(repDistance))) / intensity;
-    document.getElementById("result").innerText = `Estimated time: ${estTime.toFixed(2)} seconds`;
-    return;
-  }
+  const c = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const lnA = (sumY - c * sumX) / n;
+  const A = Math.exp(lnA);
 
-  // Interpolate c values
-  const v1 = lower.distance / lower.time;
-  const c1 = v1 * Math.sqrt(lower.distance);
-  const v2 = upper.distance / upper.time;
-  const c2 = v2 * Math.sqrt(upper.distance);
+  const fullEffortTime = A * Math.pow(repDistance, c);
+  const adjustedTime = fullEffortTime / intensity;
 
-  const weight = (repDistance - lower.distance) / (upper.distance - lower.distance);
-  const c = c1 + (c2 - c1) * weight;
-
-  const estTime = (repDistance / (c / Math.sqrt(repDistance))) / intensity;
-  document.getElementById("result").innerText = `Estimated time: ${estTime.toFixed(2)} seconds`;
+  document.getElementById("result").innerText = `Estimated time: ${adjustedTime.toFixed(2)} seconds`;
 }
