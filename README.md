@@ -188,16 +188,9 @@ This project was developed as a student assignment. If you find bugs, have sugge
 4. Test thoroughly in multiple browsers
 5. Submit a pull request with a clear description of your changes
 
-## License
-
-[Specify your license here - e.g., MIT, GPL-3.0, etc.]
-
 ## Author
 
 Created as a student project demonstrating applied mathematics, web development, and sports science principles.
-
-## Questions & Support
-
 For questions about how the calculator works or suggestions for improvement, feel free to open an issue on this repository.
 
 ---
