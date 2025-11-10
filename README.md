@@ -52,8 +52,8 @@ For example, a 12-second full-effort 300m at 85% intensity becomes: 12 / 0.85 â‰
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/sprint-rep-time-calculator.git
-cd sprint-rep-time-calculator
+git clone https://github.com/jack-ferrence/sprint-calculator.git
+cd sprint-calculator
 ```
 
 2. Open `index.html` in your web browser:
